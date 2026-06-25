@@ -1,0 +1,6 @@
+{
+  "target": 10,
+  "hold_threshold": 0.15,
+  "fade_duration": 0.12,
+  "fade_steps": 10
+}
