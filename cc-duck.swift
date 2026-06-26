@@ -65,15 +65,17 @@ func doDuck() {
     DispatchQueue.global().async { fade(from: current, to: cfg.target) }
 }
 
-// CGEvent taps register under Accessibility. Prompt + self-register, then wait.
-// macOS still requires the user to flip the toggle - but no manual + / path-browsing.
+// CGEvent taps register under Accessibility. Surface the prompt + list entry.
+// AX trust is cached per-process: a process that starts untrusted will NEVER see
+// a grant the user makes afterwards. So we don't poll-wait - we exit, and launchd
+// (KeepAlive) relaunches us. The next process reads trust fresh, and once the user
+// has toggled cc-duck on it passes this check and proceeds.
+// ponytail: relies on the launchd KeepAlive agent; ~10s relaunch throttle is the
+// ceiling on how fast it starts after granting. Fine for a one-time first run.
 let promptOpt = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
 if !AXIsProcessTrustedWithOptions(promptOpt) {
-    print("Waiting for Accessibility permission... toggle 'cc-duck' on in System Settings.")
-    while !AXIsProcessTrusted() {
-        Thread.sleep(forTimeInterval: 1.0)
-    }
-    print("Permission granted.")
+    print("Need Accessibility permission. Toggle 'cc-duck' on in System Settings -> Privacy & Security -> Accessibility; it starts on its own once granted.")
+    exit(0)
 }
 
 let eventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue)
