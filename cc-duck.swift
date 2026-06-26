@@ -62,6 +62,7 @@ func doDuck() {
     guard current > cfg.target else { return }
     try? String(current).write(toFile: SAVE_FILE, atomically: true, encoding: .utf8)
     ducked = true
+    NSLog("cc-duck: duck \(current) -> \(cfg.target)")
     DispatchQueue.global().async { fade(from: current, to: cfg.target) }
 }
 
@@ -74,7 +75,7 @@ func doDuck() {
 // ceiling on how fast it starts after granting. Fine for a one-time first run.
 let promptOpt = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
 if !AXIsProcessTrustedWithOptions(promptOpt) {
-    print("Need Accessibility permission. Toggle 'cc-duck' on in System Settings -> Privacy & Security -> Accessibility; it starts on its own once granted.")
+    NSLog("cc-duck: no Accessibility permission yet; exiting for launchd to relaunch. Toggle 'cc-duck' on in System Settings -> Privacy & Security -> Accessibility.")
     exit(0)
 }
 
@@ -105,6 +106,7 @@ guard let tap = CGEvent.tapCreate(
                 if let saved = try? String(contentsOfFile: SAVE_FILE, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines),
                    let savedVol = Int(saved) {
                     try? FileManager.default.removeItem(atPath: SAVE_FILE)
+                    NSLog("cc-duck: restore -> \(savedVol)")
                     DispatchQueue.global().async { fade(from: getVol(), to: savedVol) }
                 }
             }
@@ -120,4 +122,6 @@ guard let tap = CGEvent.tapCreate(
 let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
 CFRunLoopAddSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
 CGEvent.tapEnable(tap: tap, enable: true)
+loadConfig()
+NSLog("cc-duck: listening (Accessibility OK, target=\(cfg.target))")
 CFRunLoopRun()

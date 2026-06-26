@@ -27,14 +27,15 @@ codesign --force --deep --sign - "$APP"
 mkdir -p "$SCRIPTS"
 [ -f "$CONFIG" ] || cp "$SRC/cc-duck.json" "$CONFIG"
 
-# launchd: start on login, restart if it dies.
-mkdir -p "$HOME/Library/LaunchAgents"
-sed "s|__APP__|$APP/Contents/MacOS/cc-duck|g" "$SRC/$BUNDLE_ID.plist" > "$PLIST"
+# launchd: start on login, restart if it dies. Logs to ~/Library/Logs/cc-duck.log.
+mkdir -p "$HOME/Library/LaunchAgents" "$HOME/Library/Logs"
+LOG="$HOME/Library/Logs/cc-duck.log"
+sed -e "s|__APP__|$APP/Contents/MacOS/cc-duck|g" -e "s|__LOG__|$LOG|g" "$SRC/$BUNDLE_ID.plist" > "$PLIST"
 launchctl unload "$PLIST" 2>/dev/null || true
 launchctl load "$PLIST"
 
 echo
-echo "Installed and running."
+echo "Installed and running. Log: $LOG"
 echo "macOS will prompt for Accessibility permission on first launch."
 echo "Toggle 'cc-duck' ON in System Settings -> Privacy & Security -> Accessibility."
-echo "Then hold space in iTerm to duck the volume; release to restore it."
+echo "It starts on its own within ~10s once granted; then hold space in iTerm to duck."

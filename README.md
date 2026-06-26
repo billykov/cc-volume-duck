@@ -54,6 +54,17 @@ The `hold_threshold` keeps a normal space tap (typing) from triggering a duck.
 ./uninstall.sh --purge   # also remove config and reset the Accessibility grant
 ```
 
+## Troubleshooting
+
+It logs to `~/Library/Logs/cc-duck.log`. If it isn't ducking, check that first:
+
+```sh
+tail -n 50 ~/Library/Logs/cc-duck.log
+```
+
+Almost every issue is the Accessibility grant. See
+[TROUBLESHOOTING.md](TROUBLESHOOTING.md) for the symptom -> cause -> fix table.
+
 ## Notes
 
 - macOS only (uses `osascript` for volume and a CGEvent tap for the key).

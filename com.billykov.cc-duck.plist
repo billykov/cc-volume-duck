@@ -7,5 +7,7 @@
     <array><string>__APP__</string></array>
     <key>RunAtLoad</key><true/>
     <key>KeepAlive</key><true/>
+    <key>StandardOutPath</key><string>__LOG__</string>
+    <key>StandardErrorPath</key><string>__LOG__</string>
 </dict>
 </plist>
