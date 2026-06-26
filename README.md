@@ -16,57 +16,30 @@ short threshold and a terminal is frontmost, it fades the volume down to a targe
 level; on release it fades back to where it was. Config is hot-reloaded, no
 restart needed.
 
-## Install (step by step, no experience needed)
+## Install
 
-This takes about 5 minutes. You'll copy and paste a few lines into the Terminal
-app. macOS only.
+macOS only. Takes a couple of minutes.
 
-### Step 1 - Open the Terminal app
-
-Press **Cmd (⌘) + Space**, type `Terminal`, and press **Return**. A window with
-a text prompt opens. You'll paste commands here and press **Return** after each.
-
-### Step 2 - Install Apple's developer tools (one-time)
-
-Copy this line, paste it into Terminal, press **Return**:
+### Step 1 - Apple developer tools (one-time)
 
 ```sh
 xcode-select --install
 ```
 
-- If a popup appears, click **Install** and wait for it to finish (a few
-  minutes).
-- If it says "command line tools are already installed", great, skip ahead.
+If a popup appears, click **Install** and wait. If it says they're already
+installed, skip ahead.
 
-### Step 3 - Download this project
-
-**Easiest way (no extra setup):**
-1. Go to **https://github.com/billykov/cc-volume-duck**
-2. Click the green **`< > Code`** button, then **Download ZIP**.
-3. Open your **Downloads** folder and double-click the ZIP to unzip it. You'll
-   get a folder named `cc-volume-duck-main`.
-
-Then point Terminal at that folder by pasting this and pressing **Return**:
+### Step 2 - Clone and run the installer
 
 ```sh
-cd ~/Downloads/cc-volume-duck-main
+git clone https://github.com/billykov/cc-volume-duck.git && cd cc-volume-duck
+./install.sh
 ```
 
-(If you know git, you can instead run
-`git clone https://github.com/billykov/cc-volume-duck.git && cd cc-volume-duck`.)
+It compiles the tool and sets it up to start automatically. When it finishes it
+prints "Installed and running."
 
-### Step 4 - Run the installer
-
-Paste this and press **Return**:
-
-```sh
-bash install.sh
-```
-
-It will compile the tool and set it up to start automatically. When it finishes
-it prints "Installed and running."
-
-### Step 5 - Give it permission (this is the important one)
+### Step 3 - Give it permission (this is the important one)
 
 The tool needs macOS **Accessibility** permission to notice when you hold the
 space bar. macOS will not let it work until you allow it.
@@ -81,7 +54,7 @@ space bar. macOS will not let it work until you allow it.
 That's it. Within ~10 seconds it starts working on its own. You do **not** need
 to restart anything.
 
-### Step 6 - Try it
+### Step 4 - Try it
 
 Open your **terminal** window (iTerm, Terminal, Warp, etc.), play some music or
 a video, then **hold the space bar** for about a second. The volume should fade
@@ -100,7 +73,7 @@ tail -n 50 ~/Library/Logs/cc-duck.log
 ```
 
 Send that text to whoever shared this with you. Nine times out of ten it's the
-Accessibility permission from Step 5. See [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+Accessibility permission from Step 3. See [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ## Configure
 
