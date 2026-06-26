@@ -16,23 +16,89 @@ short threshold and iTerm is frontmost, it fades the volume down to a target
 level; on release it fades back to where it was. Config is hot-reloaded, no
 restart needed.
 
-## Install
+## Install (step by step, no experience needed)
+
+This takes about 5 minutes. You'll copy and paste a few lines into the Terminal
+app. macOS only.
+
+### Step 1 - Open the Terminal app
+
+Press **Cmd (⌘) + Space**, type `Terminal`, and press **Return**. A window with
+a text prompt opens. You'll paste commands here and press **Return** after each.
+
+### Step 2 - Install Apple's developer tools (one-time)
+
+Copy this line, paste it into Terminal, press **Return**:
 
 ```sh
-./install.sh
+xcode-select --install
 ```
 
-Requires the Xcode command line tools (`xcode-select --install`). The installer
-compiles the daemon, packages it as `~/Applications/cc-duck.app`, ad-hoc signs
-it, and sets up a launchd agent so it starts on login.
+- If a popup appears, click **Install** and wait for it to finish (a few
+  minutes).
+- If it says "command line tools are already installed", great, skip ahead.
 
-On first launch macOS prompts for **Accessibility** permission. Toggle
-`cc-duck` ON in **System Settings -> Privacy & Security -> Accessibility**.
-You can grant it whenever you get to it: macOS caches the trust decision per
-process, so the daemon doesn't sit and poll. It exits, and launchd relaunches
-it every ~10s; the first relaunch after you grant comes up trusted and starts
-working. No manual restart needed. (It's Accessibility, not Input Monitoring,
-because the event tap registers there.)
+### Step 3 - Download this project
+
+**Easiest way (no extra setup):**
+1. Go to **https://github.com/billykov/cc-volume-duck**
+2. Click the green **`< > Code`** button, then **Download ZIP**.
+3. Open your **Downloads** folder and double-click the ZIP to unzip it. You'll
+   get a folder named `cc-volume-duck-main`.
+
+Then point Terminal at that folder by pasting this and pressing **Return**:
+
+```sh
+cd ~/Downloads/cc-volume-duck-main
+```
+
+(If you know git, you can instead run
+`git clone https://github.com/billykov/cc-volume-duck.git && cd cc-volume-duck`.)
+
+### Step 4 - Run the installer
+
+Paste this and press **Return**:
+
+```sh
+bash install.sh
+```
+
+It will compile the tool and set it up to start automatically. When it finishes
+it prints "Installed and running."
+
+### Step 5 - Give it permission (this is the important one)
+
+The tool needs macOS **Accessibility** permission to notice when you hold the
+space bar. macOS will not let it work until you allow it.
+
+1. Open **System Settings** (the gear icon).
+2. Click **Privacy & Security** in the left sidebar.
+3. Click **Accessibility**.
+4. Find **cc-duck** in the list and turn its switch **ON** (it turns blue).
+   Enter your password or Touch ID if asked.
+   - If you don't see `cc-duck` yet, wait about 10 seconds and it will appear.
+
+That's it. Within ~10 seconds it starts working on its own. You do **not** need
+to restart anything.
+
+### Step 6 - Try it
+
+Open an **iTerm** window, play some music or a video, then **hold the space bar**
+for about a second. The volume should fade down. **Let go** and it fades back.
+
+> Note: right now it only kicks in when **iTerm** is the active window. If you
+> use the regular Terminal app or another one, it won't trigger (yet).
+
+### If it doesn't work
+
+Open Terminal and paste this to see what happened:
+
+```sh
+tail -n 50 ~/Library/Logs/cc-duck.log
+```
+
+Send that text to whoever shared this with you. Nine times out of ten it's the
+Accessibility permission from Step 5. See [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ## Configure
 
