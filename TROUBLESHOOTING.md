@@ -48,10 +48,16 @@ The permission is **Accessibility**, NOT Input Monitoring. The CGEvent tap is
 listen-only and registers under Accessibility on modern macOS (Darwin 24/25+).
 If you only enabled Input Monitoring, it won't work.
 
+## Symptom: ducks in one terminal but not another
+It only ducks when a **terminal is the frontmost app** (by design, so space in
+other apps doesn't duck). Recognized terminals are matched by name in the
+`TERMINALS` list near the top of `cc-duck.swift` (iterm, terminal, warp,
+alacritty, kitty, hyper, wezterm, ghostty, tabby, rio). If yours isn't there,
+add its app name to that list and re-run `./install.sh`.
+
 ## Symptom: ducks, but only sometimes
-It only ducks when **iTerm is the frontmost app** (by design, so space in other
-apps doesn't duck). And a quick tap won't trigger it: you must hold past
-`hold_threshold` (default 0.15s). Both are configurable in
+A quick tap won't trigger it: you must hold past `hold_threshold` (default
+0.15s). It and the other timings are configurable in
 `~/.claude/scripts/cc-duck.json` (hot-reloaded, no restart).
 
 ## Symptom: it duck-and-doesn't-restore (volume stuck low)

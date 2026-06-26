@@ -1,18 +1,18 @@
 # cc-volume-duck
 
-Ducks your Mac's system volume while you hold **space** to dictate in iTerm, then
-restores it to the exact level on release. Like a radio DJ's fader: the music
-drops while the mic is open, so dictation quality (and your focus) isn't fought
-by whatever was playing.
+Ducks your Mac's system volume while you hold **space** to dictate in your
+terminal, then restores it to the exact level on release. Like a radio DJ's
+fader: the music drops while the mic is open, so dictation quality (and your
+focus) isn't fought by whatever was playing.
 
-Built for dictating into Claude Code in iTerm, but it works for any
-hold-to-talk flow in iTerm.
+Built for dictating into Claude Code, but it works for any hold-to-talk flow in
+a terminal (iTerm, Terminal, Warp, and other common terminals).
 
 ## How it works
 
 A tiny native Swift daemon listens for the space key via a CoreGraphics event
 tap (listen-only, it never modifies your keystrokes). When you hold space past a
-short threshold and iTerm is frontmost, it fades the volume down to a target
+short threshold and a terminal is frontmost, it fades the volume down to a target
 level; on release it fades back to where it was. Config is hot-reloaded, no
 restart needed.
 
@@ -83,11 +83,13 @@ to restart anything.
 
 ### Step 6 - Try it
 
-Open an **iTerm** window, play some music or a video, then **hold the space bar**
-for about a second. The volume should fade down. **Let go** and it fades back.
+Open your **terminal** window (iTerm, Terminal, Warp, etc.), play some music or
+a video, then **hold the space bar** for about a second. The volume should fade
+down. **Let go** and it fades back.
 
-> Note: right now it only kicks in when **iTerm** is the active window. If you
-> use the regular Terminal app or another one, it won't trigger (yet).
+> Note: it only kicks in when a **terminal** window is active, so holding space
+> in other apps won't duck. If your terminal isn't recognized, see
+> [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ### If it doesn't work
 
@@ -139,4 +141,5 @@ Almost every issue is the Accessibility grant. See
   but won't work (it's bound to the previous hash). Remove it with the `-`
   button (or run `tccutil reset Accessibility com.billykov.cc-duck`), then grant
   again so the new binary gets a clean entry.
-- Only ducks when iTerm is the frontmost app.
+- Only ducks when a terminal is the frontmost app. Recognized terminals are
+  listed in `TERMINALS` near the top of `cc-duck.swift`; add yours there.

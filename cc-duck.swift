@@ -47,8 +47,13 @@ func fade(from start: Int, to end: Int) {
     }
 }
 
-func isITermActive() -> Bool {
-    runScript("name of (info for (path to frontmost application))").contains("iTerm")
+// Frontmost app must be a terminal. macOS has no API that says "this is a
+// terminal", so we match common ones by name. Add yours here if it's missing.
+let TERMINALS = ["iterm", "terminal", "warp", "alacritty", "kitty", "hyper", "wezterm", "ghostty", "tabby", "rio"]
+
+func isTerminalActive() -> Bool {
+    let app = runScript("name of (info for (path to frontmost application))").lowercased()
+    return TERMINALS.contains { app.contains($0) }
 }
 
 var ducked = false
@@ -57,7 +62,7 @@ var holdTimer: Timer?
 
 func doDuck() {
     loadConfig()
-    guard spaceHeld, !ducked, isITermActive() else { return }
+    guard spaceHeld, !ducked, isTerminalActive() else { return }
     let current = getVol()
     guard current > cfg.target else { return }
     try? String(current).write(toFile: SAVE_FILE, atomically: true, encoding: .utf8)
