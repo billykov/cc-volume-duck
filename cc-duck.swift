@@ -10,6 +10,7 @@ struct Config: Codable {
     var hold_threshold: Double = 0.15
     var fade_duration: Double = 0.25
     var fade_steps: Int = 10
+    var extra_terminals: [String] = []   // user opt-ins, e.g. ["code", "cursor"]
 }
 
 var cfg = Config()
@@ -48,12 +49,13 @@ func fade(from start: Int, to end: Int) {
 }
 
 // Frontmost app must be a terminal. macOS has no API that says "this is a
-// terminal", so we match common ones by name. Add yours here if it's missing.
+// terminal", so we match common ones by name. Add yours here if it's missing,
+// or opt in at runtime via "extra_terminals" in the config (e.g. ["code"]).
 let TERMINALS = ["iterm", "terminal", "warp", "alacritty", "kitty", "hyper", "wezterm", "ghostty", "tabby", "rio"]
 
 func isTerminalActive() -> Bool {
     let app = runScript("name of (info for (path to frontmost application))").lowercased()
-    return TERMINALS.contains { app.contains($0) }
+    return (TERMINALS + cfg.extra_terminals).contains { app.contains($0) }
 }
 
 var ducked = false

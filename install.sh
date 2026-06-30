@@ -27,6 +27,28 @@ codesign --force --deep --sign - "$APP"
 mkdir -p "$SCRIPTS"
 [ -f "$CONFIG" ] || cp "$SRC/cc-duck.json" "$CONFIG"
 
+# Optional: opt into IDE-embedded terminals (VS Code, Cursor). Only ask on a real
+# TTY; default no. This just seeds "extra_terminals" in the config, which the app
+# hot-reloads - you can also edit it by hand later, no reinstall needed.
+if [ -t 0 ]; then
+  echo
+  echo "Supported by default: iTerm, Terminal, Warp, Ghostty, Kitty, and more."
+  echo "Also enable VS Code / Cursor? Heads up: space will then duck whenever those"
+  echo "apps are frontmost - including while you edit a file, not just the terminal pane."
+  printf "Enable VS Code / Cursor support? [y/N] "
+  read -r reply
+  if [[ "$reply" =~ ^[Yy] ]]; then
+    /usr/bin/python3 - "$CONFIG" <<'PY'
+import json, sys
+p = sys.argv[1]
+cfg = json.load(open(p))
+cfg["extra_terminals"] = sorted(set(cfg.get("extra_terminals", [])) | {"code", "cursor"})
+json.dump(cfg, open(p, "w"), indent=2)
+PY
+    echo "Enabled. (Remove \"code\"/\"cursor\" from $CONFIG to undo.)"
+  fi
+fi
+
 # launchd: start on login, restart if it dies. Logs to ~/Library/Logs/cc-duck.log.
 mkdir -p "$HOME/Library/LaunchAgents" "$HOME/Library/Logs"
 LOG="$HOME/Library/Logs/cc-duck.log"

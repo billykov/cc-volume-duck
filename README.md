@@ -81,12 +81,31 @@ Edit `~/.claude/scripts/cc-duck.json` (changes apply live):
 
 | Field            | Meaning                                        | Default |
 |------------------|------------------------------------------------|---------|
-| `target`         | Volume to duck to, 0-100                        | 10      |
-| `hold_threshold` | Seconds to hold space before ducking           | 0.15    |
-| `fade_duration`  | Seconds for the fade in/out                     | 0.12    |
-| `fade_steps`     | Number of volume steps in a fade                | 10      |
+| `target`          | Volume to duck to, 0-100                       | 10      |
+| `hold_threshold`  | Seconds to hold space before ducking           | 0.15    |
+| `fade_duration`   | Seconds for the fade in/out                    | 0.12    |
+| `fade_steps`      | Number of volume steps in a fade               | 10      |
+| `extra_terminals` | Extra app names to treat as terminals          | `[]`    |
 
 The `hold_threshold` keeps a normal space tap (typing) from triggering a duck.
+
+### IDE-embedded terminals (VS Code, Cursor)
+
+By default it only ducks in standalone terminals (iTerm, Terminal, Warp,
+Ghostty, etc.). IDE-integrated terminals are **not** covered: to macOS the
+frontmost app is the IDE (`Code`, `Cursor`), not a terminal, and there's no API
+to tell "focused in the terminal pane" apart from "editing a file."
+
+You can opt in. The installer asks, or add the app names yourself any time
+(applies live, no reinstall):
+
+```json
+{ "extra_terminals": ["code", "cursor"] }
+```
+
+Trade-off: with this on, holding space ducks whenever that app is frontmost,
+**including while you edit a file**, not just in the terminal pane. If that's
+annoying, run Claude Code in a standalone terminal instead.
 
 ## Uninstall
 
@@ -114,5 +133,6 @@ Almost every issue is the Accessibility grant. See
   but won't work (it's bound to the previous hash). Remove it with the `-`
   button (or run `tccutil reset Accessibility com.billykov.cc-duck`), then grant
   again so the new binary gets a clean entry.
-- Only ducks when a terminal is the frontmost app. Recognized terminals are
-  listed in `TERMINALS` near the top of `cc-duck.swift`; add yours there.
+- Only ducks when a terminal is the frontmost app. The built-in list is
+  `TERMINALS` near the top of `cc-duck.swift`. To add one without recompiling,
+  use `extra_terminals` in the config (see Configure).
